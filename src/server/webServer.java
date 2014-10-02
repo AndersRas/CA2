@@ -13,8 +13,10 @@ import com.sun.net.httpserver.HttpServer;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.util.List;
+import java.util.Scanner;
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 
@@ -44,8 +46,41 @@ public class webServer {
     private HttpHandler createContext() {
         return new HttpHandler() {
             @Override
-            public void handle(HttpExchange exchange) throws IOException {
-                exchange.sendResponseHeaders(200, 0);
+            public void handle(HttpExchange he) throws IOException {
+                
+                he.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+                String path = he.getRequestURI().getPath();
+                int lastIndexOf = path.lastIndexOf("/");
+                
+                if("GET".equalsIgnoreCase(he.getRequestMethod())){
+                    if (lastIndexOf > 0){
+                        int id = Integer.parseInt(path.substring(lastIndexOf + 1));
+                        getPersonAsJSON(id, he);
+                        return;
+                    }
+                    getPersonsAsJSON(he);
+                }
+                
+                if("DELETE".equalsIgnoreCase(he.getRequestMethod())){
+                    if (lastIndexOf > 0){
+                        int id = Integer.parseInt(path.substring(lastIndexOf + 1));
+                        deletePerson(id);
+                    }
+                }
+                
+                if("POST".equalsIgnoreCase(he.getRequestMethod())){
+                    String message = "";
+                    Scanner scanner = new Scanner(he.getRequestBody());
+                    while (scanner.hasNextLine())
+                    {
+                        message += scanner.nextLine();
+                    }
+                    if(path.substring(lastIndexOf + 4).equalsIgnoreCase("Role")){
+                        addRoleFromGson(path, lastIndexOf);
+                        return;
+                    }
+                    addPersonFromJson(new Gson().fromJson(message, Person.class), he);
+                }
             }
         };
     }
@@ -121,7 +156,7 @@ public class webServer {
             throw new IllegalArgumentException("Illegal characters in input");
           }
           
-          response = new Gson().toJson(p);
+//          response = new Gson().toJson(p);
           }catch(IllegalArgumentException iae){
             status = 400;
             response = iae.getMessage();
@@ -137,6 +172,10 @@ public class webServer {
     
     public void addRoleFromGson(String json, long id)
     {
+        
+    }
+    
+    public void deletePerson(int id){
         
     }
 }
