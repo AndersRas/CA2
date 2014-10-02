@@ -66,6 +66,8 @@ public class Facade implements FacadeIF {
         Roleschool role = gson.fromJson(json, Roleschool.class);
         Person person = em.find(Person.class, id);
         //person.a
+        return null;
+        
     }
 
     @Override
