@@ -27,7 +27,7 @@ import javax.persistence.Table;
  * @author Christoffer
  */
 @Entity
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy=InheritanceType.JOINED)
 @Table(name = "ROLESCHOOL")
 @DiscriminatorColumn(name = "DT", discriminatorType = DiscriminatorType.CHAR)
 @DiscriminatorValue("R")
