@@ -5,6 +5,7 @@
  */
 package Entity;
 
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -14,8 +15,13 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "ASSISTENTTEACHER")
+@DiscriminatorValue("AT")
 public class Assistentteacher extends Roleschool {
 
+    public Assistentteacher(Person owner, String roleName) {
+        super(owner, roleName);
+    }
+    
     public Assistentteacher() {
     }
 

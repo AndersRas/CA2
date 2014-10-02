@@ -14,7 +14,7 @@ create table person(
 
 create table roleschool(
     id integer primary key,
-    "role" varchar(15),
+    roleName varchar(15),
     constraint FK_ROLE_ID foreign key (id) references person(id)
 );
 

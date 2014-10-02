@@ -6,14 +6,15 @@
 package Entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -31,6 +32,9 @@ public class Person implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     
+    @OneToMany(mappedBy="owner")
+    private List<Roleschool> roles;
+
     @Column(name = "FIRSTNAME")
     private String firstname;
     
@@ -43,18 +47,30 @@ public class Person implements Serializable {
     @Column(name = "EMAIL")
     private String email;
 
-    public Person(String firstname, String lastname) {
+    public Person(String firstname, String lastname){
+        this();
         this.firstname = firstname;
         this.lastname = lastname;
     }
     
-    public Person() {
+    public Person(){
+        if(roles == null){
+            roles = new ArrayList<>();
+        }
+    }
+    
+    public List<Roleschool> getRoles() {
+        return roles;
+    }
+
+    public void addRole(Roleschool role) {
+        roles.add(role);
     }
     
     public Integer getId() {
         return id;
     }
-
+    
     public String getFirstname() {
         return firstname;
     }
