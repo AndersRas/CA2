@@ -9,10 +9,18 @@ import com.google.gson.annotations.Expose;
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
@@ -20,7 +28,10 @@ import javax.persistence.Table;
  * @author Christoffer
  */
 @Entity
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Table(name = "ROLESCHOOL")
+@DiscriminatorColumn(name = "DT", discriminatorType = DiscriminatorType.CHAR)
+@DiscriminatorValue("R")
 public class Roleschool implements Serializable {
     private static final long serialVersionUID = 1L;
     
@@ -30,31 +41,34 @@ public class Roleschool implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="OWNER_ID")
+    private Person owner;
     @Column(name = "role")
     @Expose
     private String role;
 
+    @Column(name = "roleName")
+    private String roleName;
+    
+    public Roleschool(Person owner, String roleName) {
+        this.owner = owner;
+        this.roleName = roleName;
+    }
+    
     public Roleschool() {
     }
-
-    public Roleschool(Integer id) {
-        this.id = id;
+    
+    public Person getOwner() {
+        return owner;
     }
 
     public Integer getId() {
         return id;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
+    public String getRoleName() {
+        return roleName;
     }
     
 }

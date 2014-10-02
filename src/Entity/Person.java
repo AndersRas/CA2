@@ -7,14 +7,15 @@ package Entity;
 
 import com.google.gson.annotations.Expose;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -33,6 +34,9 @@ public class Person implements Serializable {
    @Expose
     private Integer id;
     
+    @OneToMany(mappedBy="owner")
+    private List<Roleschool> roles;
+
     @Column(name = "FIRSTNAME")
     @Expose
     private String firstname;
@@ -49,18 +53,30 @@ public class Person implements Serializable {
     @Expose
     private String email;
 
-    public Person(String firstname, String lastname) {
+    public Person(String firstname, String lastname){
+        this();
         this.firstname = firstname;
         this.lastname = lastname;
     }
     
-    public Person() {
+    public Person(){
+        if(roles == null){
+            roles = new ArrayList<>();
+        }
+    }
+    
+    public List<Roleschool> getRoles() {
+        return roles;
+    }
+
+    public void addRole(Roleschool role) {
+        roles.add(role);
     }
     
     public Integer getId() {
         return id;
     }
-
+    
     public String getFirstname() {
         return firstname;
     }

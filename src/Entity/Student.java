@@ -7,6 +7,7 @@ package Entity;
 
 import com.google.gson.annotations.Expose;
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -16,13 +17,18 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "STUDENT")
-
+@DiscriminatorValue("S")
 public class Student extends Roleschool {
     
     @Column(name = "SEMESTER")
     @Expose
     private String semester;
 
+    public Student(String semester, Person owner, String roleName) {
+        super(owner, roleName);
+        this.semester = semester;
+    }
+    
     public Student() {
     }
 

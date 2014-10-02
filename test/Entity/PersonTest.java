@@ -34,14 +34,11 @@ public class PersonTest {
     @Test
     public void testCreatingPerson() {
         EntityManager em = Persistence.createEntityManagerFactory("Ca2_3semesterPU").createEntityManager();
-//        Person p = new Person("Anders", "Rasmussen");
-//        em.getTransaction().begin();
-//        em.persist(p);
-//        em.getTransaction().commit();
+        Person p = new Person("Anders", "Rasmussen");
+        em.getTransaction().begin();
+        em.persist(p);
+        em.getTransaction().commit();
         List<Person> persons = em.createQuery("select p from Person p").getResultList();
-        for(Person c: persons){
-            System.out.println(c.getFirstname());
-        }
         assertEquals("Anders", persons.get(0).getFirstname());
         
     }
