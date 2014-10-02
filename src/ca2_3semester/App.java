@@ -6,7 +6,11 @@
 package ca2_3semester;
 
 import java.io.IOException;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import server.webServer;
+
 
 /**
  *
@@ -20,8 +24,10 @@ public class App {
      */
     public static void main(String[] args) throws IOException
     {
-        webServer server = new webServer(8080);
+        webServer server = new webServer(port);
         server.start();
         System.out.println("Server started, listening on port: " + port);
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("Ca2_3semesterPU");
+        EntityManager em = emf.createEntityManager();
     }
 }
