@@ -64,10 +64,17 @@ public class Facade implements FacadeIF {
     @Override
     public Roleschool addRoleFromGson(String json, long id) {
         Roleschool role = gson.fromJson(json, Roleschool.class);
-        Person person = em.find(Person.class, id);
-        //person.a
-        return null;
-        
+       
+        em.getTransaction().begin();
+        try {
+            Person person = em.find(Person.class, id);
+            person.addRole(role);
+            em.persist(role);
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            em.getTransaction().rollback();
+        }
+        return role;
     }
 
     @Override
@@ -82,6 +89,7 @@ public class Facade implements FacadeIF {
             em.getTransaction().commit();
         } catch (Exception e) {
             em.getTransaction().rollback();
+            person = null;
         }
         return person;
     }
