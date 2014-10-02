@@ -15,7 +15,9 @@ import javax.persistence.Persistence;
  */
 public class Facade implements FacadeIF {
 
-    private static EntityManagerFactory emf = Persistence.createEntityManagerFactory("Ca2_3semesterPU");
+    EntityManagerFactory emf = Persistence.createEntityManagerFactory("Ca2_3semesterPU");
+    EntityManager em = emf.createEntityManager();
+
     private final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
     private static Facade instance = new Facade();
 
@@ -31,16 +33,14 @@ public class Facade implements FacadeIF {
 
     @Override
     public String getPersonsAsJSON() {
-        
-        EntityManager em = emf.createEntityManager();
+
         List<Person> persons = em.createQuery("SELECT p FROM person").getResultList();
         return gson.toJson(persons);
-        
+
     }
 
     @Override
     public String getPersonAsJSON(long id) throws NotFoundException {
-        EntityManager em = emf.createEntityManager();
         Person person = em.find(Person.class, id);
         if (person == null) {
             throw new NotFoundException("No person exists for the given id!");
@@ -50,17 +50,26 @@ public class Facade implements FacadeIF {
 
     @Override
     public Person addPersonFromGson(String json) {
-         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Person person = gson.fromJson(json, Person.class);
+        em.getTransaction().begin();
+        try {
+            em.persist(person);
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            em.getTransaction().rollback();
+        }
+        return person;
     }
 
     @Override
     public Roleschool addRoleFromGson(String json, long id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Roleschool role = gson.fromJson(json, Roleschool.class);
+        Person person = em.find(Person.class, id);
+        //person.a
     }
 
     @Override
     public Person delete(long id) throws NotFoundException {
-        EntityManager em = emf.createEntityManager();
         Person person = em.find(Person.class, id);
         if (person == null) {
             throw new NotFoundException("No person exists for the given id!");
@@ -71,7 +80,6 @@ public class Facade implements FacadeIF {
             em.getTransaction().commit();
         } catch (Exception e) {
             em.getTransaction().rollback();
-            person = null;
         }
         return person;
     }

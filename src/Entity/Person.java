@@ -5,6 +5,7 @@
  */
 package Entity;
 
+import com.google.gson.annotations.Expose;
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -29,18 +30,23 @@ public class Person implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.AUTO)
+   @Expose
     private Integer id;
     
     @Column(name = "FIRSTNAME")
+    @Expose
     private String firstname;
     
     @Column(name = "LASTNAME")
+    @Expose
     private String lastname;
     
     @Column(name = "PHONE")
+    @Expose
     private String phone;
     
     @Column(name = "EMAIL")
+    @Expose
     private String email;
 
     public Person(String firstname, String lastname) {

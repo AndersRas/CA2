@@ -5,6 +5,7 @@
  */
 package Entity;
 
+import com.google.gson.annotations.Expose;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -19,6 +20,7 @@ import javax.persistence.Table;
 public class Student extends Roleschool {
     
     @Column(name = "SEMESTER")
+    @Expose
     private String semester;
 
     public Student() {

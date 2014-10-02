@@ -5,6 +5,7 @@
  */
 package Entity;
 
+import com.google.gson.annotations.Expose;
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -30,6 +31,7 @@ public class Roleschool implements Serializable {
     private Integer id;
     
     @Column(name = "role")
+    @Expose
     private String role;
 
     public Roleschool() {
