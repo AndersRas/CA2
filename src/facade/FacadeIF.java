@@ -11,11 +11,11 @@ public interface FacadeIF {
 
     public String getPersonsAsJSON();
 
-    public String getPersonAsJSON(long id) throws NotFoundException;
+    public String getPersonAsJSON(Integer id) throws NotFoundException;
 
     public Person addPersonFromGson(String json);
 
-    public Roleschool addRoleFromGson(String json, long id) throws NotFoundException;
+    public Roleschool addRoleFromGson(String json, Integer id) throws NotFoundException;
 
-    public Person delete(long id) throws NotFoundException;
+    public Person delete(Integer id) throws NotFoundException;
 }

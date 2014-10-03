@@ -1,7 +1,10 @@
 package facade;
 
+import Entity.Assistentteacher;
 import Entity.Person;
 import Entity.Roleschool;
+import Entity.Student;
+import Entity.Teacher;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import exceptions.NotFoundException;
@@ -40,7 +43,7 @@ public class Facade implements FacadeIF {
     }
 
     @Override
-    public String getPersonAsJSON(long id) throws NotFoundException {
+    public String getPersonAsJSON(Integer id) throws NotFoundException {
         Person person = em.find(Person.class, id);
         if (person == null) {
             throw new NotFoundException("No person exists for the given id!");
@@ -62,9 +65,19 @@ public class Facade implements FacadeIF {
     }
 
     @Override
-    public Roleschool addRoleFromGson(String json, long id) {
+    public Roleschool addRoleFromGson(String json, Integer id) {
         Roleschool role = gson.fromJson(json, Roleschool.class);
-       
+        
+        if(role.getRoleName().toLowerCase().contains("student")){
+            role = gson.fromJson(json, Student.class);
+        }
+        if(role.getRoleName().toLowerCase().contains("teacher")){
+            role = gson.fromJson(json, Teacher.class);
+        }
+        if(role.getRoleName().toLowerCase().contains("Assistentteacher")){
+            role = gson.fromJson(json, Assistentteacher.class);
+        }
+         
         em.getTransaction().begin();
         try {
             Person person = em.find(Person.class, id);
@@ -78,7 +91,7 @@ public class Facade implements FacadeIF {
     }
 
     @Override
-    public Person delete(long id) throws NotFoundException {
+    public Person delete(Integer id) throws NotFoundException {
         Person person = em.find(Person.class, id);
         if (person == null) {
             throw new NotFoundException("No person exists for the given id!");

@@ -31,7 +31,7 @@ public class Person implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.AUTO)
-   @Expose
+    @Expose
     private Integer id;
     
     @OneToMany(mappedBy="owner")
@@ -108,5 +108,10 @@ public class Person implements Serializable {
     public void setEmail(String email) {
         this.email = email;
     }
+    
+//    @Override
+//    public String toString(){
+//        return firstname + lastname;
+//    }
 
 }

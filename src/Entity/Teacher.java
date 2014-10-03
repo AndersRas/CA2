@@ -21,7 +21,7 @@ import javax.persistence.Table;
 public class Teacher extends Roleschool {
    
     @Column(name = "DEGREE")
-    @Expose
+//    @Expose
     private String degree;
 
     public Teacher(String degree, Person owner, String roleName) {
