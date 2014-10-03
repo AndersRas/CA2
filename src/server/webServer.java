@@ -32,6 +32,7 @@ public class webServer {
         server = HttpServer.create();
         server.bind(new InetSocketAddress(port), 0);
         server.createContext("/person", createContext());
+        facade = Facade.getFacade(true);
     }
 
     public void start() {
@@ -53,17 +54,25 @@ public class webServer {
                 
                 if("GET".equalsIgnoreCase(he.getRequestMethod())){
                     if (lastIndexOf > 0){
+                        he.sendResponseHeaders(200, 0);
                         try {
-                            he.sendResponseHeaders(200, 0);
                             int id = Integer.parseInt(path.substring(lastIndexOf + 1));
                             OutputStream responseBody = he.getResponseBody();
-                            responseBody.write(facade.getPersonAsJSON(id).getBytes());
-                            return;
+                            String json = new Gson().toJson(facade.getPersonAsJSON(id));
+                            System.out.println(json);
+                            responseBody.write(json.getBytes());
                         } catch (NotFoundException ex) {
                             Logger.getLogger(webServer.class.getName()).log(Level.SEVERE, null, ex);
                         }
+                    }else{
+                        he.sendResponseHeaders(200, 0);
+                        try (OutputStream responseBody = he.getResponseBody())
+                        {
+                            String json = new Gson().toJson(facade.getPersonsAsJSON());
+                            System.out.println(json);
+                            responseBody.write(json.getBytes());
+                        }
                     }
-                    facade.getPersonsAsJSON();
                 }
                 
                 if("DELETE".equalsIgnoreCase(he.getRequestMethod())){

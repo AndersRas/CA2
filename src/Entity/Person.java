@@ -54,15 +54,15 @@ public class Person implements Serializable {
     private String email;
 
     public Person(String firstname, String lastname){
-        this();
+//        this();
         this.firstname = firstname;
         this.lastname = lastname;
     }
     
     public Person(){
-        if(roles == null){
-            roles = new ArrayList<>();
-        }
+//        if(roles == null){
+//            roles = new ArrayList<>();
+//        }
     }
     
     public List<Roleschool> getRoles() {
@@ -70,6 +70,9 @@ public class Person implements Serializable {
     }
 
     public void addRole(Roleschool role) {
+        if(roles == null){
+            roles = new ArrayList<>();
+        }
         roles.add(role);
     }
     

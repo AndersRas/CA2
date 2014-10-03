@@ -39,13 +39,23 @@ public class FacadeTest {
 
     @After
     public void tearDown() {
+        facade = null;
+        emf = null;
+        em = null;
     }
 
     @Test
     public void testAddPersonFromGson() throws NotFoundException {
-        Person p = facade.addPersonFromGson(gson.toJson(new Person("Bettina", "Løfmark")));
+        Person per = new Person("Bettina", "Løfmark");
+//        per.addRole(Student("3 semester", per, "datamatiker student"));
+        Person p = facade.addPersonFromGson(gson.toJson(per));
         String expectedJsonString = gson.toJson(p);
         String actual = facade.getPersonAsJSON(p.getId());
+        
+//        System.out.println(gson.toJson(per));
+//        System.out.println(expectedJsonString);
+//        System.out.println(actual);
+        
         assertEquals(expectedJsonString, actual);
         System.out.println(p.getId());
 
@@ -68,6 +78,10 @@ public class FacadeTest {
         test.put(pers2.getId(), pers2);
         String expected = gson.toJson(test.values());
         String result = facade.getPersonsAsJSON();
+        
+        System.out.println(expected);
+        System.out.println(result);
+        
         assertEquals(expected, result);
     }
 
@@ -91,7 +105,7 @@ public class FacadeTest {
 
     @Test(expected = NotFoundException.class)
     public void testGetNonExistingPerson() throws Exception {
-        facade.getPersonAsJSON(5);
+        facade.getPersonAsJSON(10);
     }
 
 }

@@ -36,8 +36,7 @@ public class Facade implements FacadeIF {
 
     @Override
     public String getPersonsAsJSON() {
-
-        List<Person> persons = em.createQuery("SELECT p FROM person").getResultList();
+        List<Person> persons = em.createQuery("SELECT p FROM Person p").getResultList();
         return gson.toJson(persons);
 
     }
