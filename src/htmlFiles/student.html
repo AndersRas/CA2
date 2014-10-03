@@ -86,7 +86,7 @@
                                 <form action="http://datdb.cphbusiness.dk/callme.php" method="POST"> 
                                     <div class="personEditAndNew"></div>
                                         <br /><br />
-                                        <input type="submit" value="Add new person"/>
+                                        <button class="btn btnSave" >Save</button>
                             </form>                            
                         </div>
                     </div>
@@ -97,6 +97,7 @@
                     <button class="btn btn-info">Show one Person</button><br /><br />
                     <button class="btn btn-warning">Add role</button><br /><br />
                     <button class="btn btn-danger">Delete person</button><br /><br />
+                    <button class="btn btn-danger btnNew">New</button><br /><br />                    
                 </div>           
                 
                 <div class="clearfix"></div>
@@ -123,12 +124,12 @@
                 <button class="btn btn-link btnEdit" x-id="{index}">Edit</button>
     </script>
      <script type="text/html" id="personEditAndNewTemplate">
-         <input type="hidden" name="id" value="{}"/>
+         <input type="hidden" name="id" value="{id}"/>
                                         <label>First name: </label>
                                             <input type="text" name="firstname" value="{firstname}"/>
                                                 <br /><br />
                                         <label>Last name: </label>
-                                            <input type="text" name="adr" value="{lastname}" />
+                                            <input type="text" name="lastname" value="{lastname}" />
                                                 <br /><br />
                                         <label>Phone: </label> 
                                             <input type="text" name="phone" value="{phone}" />
@@ -172,6 +173,7 @@
     return tmpl;
 };
     </script>
+      <!-- jQuery Version 1.11.0 -->
         <script src="jquery-1.11.0.js"></script>
     <script>
         var asPersonArray = JSON.parse('[{"id":"1","firstname":"Tanja","lastname":"Cederholm","phone":"11223344","email":"jhg@kjdf.dk","roles":[{}]}]');
@@ -185,8 +187,32 @@
             } )
 
     </script>
-    <!-- jQuery Version 1.11.0 -->
+    
+    <script>
+                jQuery(".btnNew").on("click", function(evt){
+                    
+                    var obj = {   "id":"-1",
+    "firstname":"",    
+    "lastname":"",
+	"phone":"",
+ 	"email":"" 
+}
+            jQuery(".personEditAndNew").html(window.cn.ApllyTmpl(obj,"personEditAndNewTemplate"));
+            } )
 
+        
+    </script>
+  
+    <script>
+         jQuery(".btnSave").on("click", function(evt){
+             evt.preventDefault();
+        var obj = {}
+        jQuery(".personEditAndNew input").each(function( index ) {
+            obj[$( this ).attr("name")] =  $( this ).val() ;
+});
+alert(JSON.stringify(obj));
+         });
+    </script>
 
     <!-- Bootstrap Core JavaScript -->
     <script src="bootstrap.min.js"></script>
@@ -194,3 +220,4 @@
 </body>
 
 </html>
+111
