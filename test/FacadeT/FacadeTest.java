@@ -90,12 +90,16 @@ public class FacadeTest {
     public void testAddRoleFromGson() throws NotFoundException {
         Person p = facade.addPersonFromGson(gson.toJson(new Person("Bettina", "Løfmark")));
         Roleschool role = new Student("3. Semester", p, "Datamatiker");
-        facade.addRoleFromGson(gson.toJson(role), p.getId());
-        String personAsJSON = facade.getPersonAsJSON(p.getId());
-        Person fromJSON = gson.fromJson(personAsJSON, Person.class);
-        Roleschool getRole = fromJSON.getRoles().get(0);
-        List<Student> rolePerson = em.createQuery("SELECT s FROM Student s").getResultList();
-        assertEquals(role.getId(), rolePerson.get);
+        Person per = facade.addPersonFromGson(gson.toJson(p));
+        Roleschool s = facade.addRoleFromGson(gson.toJson(role), per.getId());
+        assertEquals(s.getRoleName(), role.getRoleName());
+        
+//        facade.addRoleFromGson(gson.toJson(role), p.getId());
+//        String personAsJSON = facade.getPersonAsJSON(p.getId());
+//        Person fromJSON = gson.fromJson(personAsJSON, Person.class);
+////        Roleschool getRole = fromJSON.getRoles().get(0);
+//        List<Student> rolePerson = em.createQuery("SELECT s FROM Student s").getResultList();
+//        assertEquals(role.getId(), rolePerson.get(0).getRoleName());
     }
 
     @Test(expected = NotFoundException.class)

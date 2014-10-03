@@ -76,22 +76,22 @@ public class Facade implements FacadeIF {
         
         Roleschool role = gson.fromJson(json, Roleschool.class);
         System.out.println(role.getRoleName());
-        
-        
 
-//        if(role.getRoleName().equals("Student")){ss);
-//        }
-//        if(role.getRoleName().equals("Teacher")){
-//            role = gson.fromJson(json, Teacher.class);
-//        }
-//        if(role.getRoleName().equals("Assistentteacher")){
-//            role = gson.fromJson(json, Assistentteacher.class);
-//        }
+        if(role.getRoleName().equals("Student")){
+             role = gson.fromJson(json, Student.class);
+        }
+        if(role.getRoleName().equals("Teacher")){
+            role = gson.fromJson(json, Teacher.class);
+        }
+        if(role.getRoleName().equals("Assistentteacher")){
+            role = gson.fromJson(json, Assistentteacher.class);
+        }
       
-        Person person = em.find(Person.class, id);
+        Person person = null;
         
         em.getTransaction().begin();
         try {
+            person = em.find(Person.class, id);
             person.addRole(role);
             em.persist(role);
             em.persist(person);
