@@ -19,8 +19,9 @@ import javax.persistence.Persistence;
 public class Facade implements FacadeIF {
 
     EntityManagerFactory emf = Persistence.createEntityManagerFactory("Ca2_3semesterPU");
-    EntityManager em = emf.createEntityManager();
+//    EntityManager em = emf.createEntityManager();
 
+    
     private final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
     private static Facade instance = new Facade();
 
@@ -36,6 +37,7 @@ public class Facade implements FacadeIF {
 
     @Override
     public String getPersonsAsJSON() {
+        EntityManager em = emf.createEntityManager();
         List<Person> persons = em.createQuery("SELECT p FROM Person p").getResultList();
         return gson.toJson(persons);
 
@@ -43,6 +45,7 @@ public class Facade implements FacadeIF {
 
     @Override
     public String getPersonAsJSON(Integer id) throws NotFoundException {
+        EntityManager em = emf.createEntityManager();
         Person person = em.find(Person.class, id);
         if (person == null) {
             throw new NotFoundException("No person exists for the given id!");
@@ -52,6 +55,7 @@ public class Facade implements FacadeIF {
 
     @Override
     public Person addPersonFromGson(String json) {
+        EntityManager em = emf.createEntityManager();
         Person person = gson.fromJson(json, Person.class);
         em.getTransaction().begin();
         try {
@@ -59,38 +63,51 @@ public class Facade implements FacadeIF {
             em.getTransaction().commit();
         } catch (Exception e) {
             em.getTransaction().rollback();
+        } finally {
+            em.close();
         }
+
         return person;
     }
 
     @Override
     public Roleschool addRoleFromGson(String json, Integer id) {
-        Roleschool role = gson.fromJson(json, Roleschool.class);
+        EntityManager em = emf.createEntityManager();
         
-        if(role.getRoleName().toLowerCase().contains("student")){
-            role = gson.fromJson(json, Student.class);
-        }
-        if(role.getRoleName().toLowerCase().contains("teacher")){
-            role = gson.fromJson(json, Teacher.class);
-        }
-        if(role.getRoleName().toLowerCase().contains("Assistentteacher")){
-            role = gson.fromJson(json, Assistentteacher.class);
-        }
-         
+        Roleschool role = gson.fromJson(json, Roleschool.class);
+        System.out.println(role.getRoleName());
+        
+        
+
+//        if(role.getRoleName().equals("Student")){ss);
+//        }
+//        if(role.getRoleName().equals("Teacher")){
+//            role = gson.fromJson(json, Teacher.class);
+//        }
+//        if(role.getRoleName().equals("Assistentteacher")){
+//            role = gson.fromJson(json, Assistentteacher.class);
+//        }
+      
+        Person person = em.find(Person.class, id);
+        
         em.getTransaction().begin();
         try {
-            Person person = em.find(Person.class, id);
             person.addRole(role);
             em.persist(role);
-            em.getTransaction().commit();
+            em.persist(person);
+           em.getTransaction().commit();
         } catch (Exception e) {
             em.getTransaction().rollback();
+        } finally {
+            em.close();
         }
+
         return role;
     }
 
     @Override
     public Person delete(Integer id) throws NotFoundException {
+        EntityManager em = emf.createEntityManager();
         Person person = em.find(Person.class, id);
         if (person == null) {
             throw new NotFoundException("No person exists for the given id!");
@@ -102,8 +119,12 @@ public class Facade implements FacadeIF {
         } catch (Exception e) {
             em.getTransaction().rollback();
             person = null;
+        } //finally {
+//            em.close();
+//        }
+
+            return person;
         }
-        return person;
+
     }
 
-}

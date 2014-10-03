@@ -4,9 +4,11 @@ import Entity.Person;
 import Entity.Roleschool;
 import Entity.Student;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import exceptions.NotFoundException;
 import facade.Facade;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -23,7 +25,7 @@ import static org.junit.Assert.*;
 public class FacadeTest {
 
     Facade facade;
-    Gson gson = new Gson();
+    Gson gson;
     EntityManager em;
     EntityManagerFactory emf;
 
@@ -35,6 +37,7 @@ public class FacadeTest {
         facade = Facade.getFacade(true);
         emf = Persistence.createEntityManagerFactory("Ca2_3semesterPU");
         em = emf.createEntityManager();
+        gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
     }
 
     @After
@@ -46,11 +49,9 @@ public class FacadeTest {
 
     @Test
     public void testAddPersonFromGson() throws NotFoundException {
-        Person per = new Person("Bettina", "Løfmark");
-//        per.addRole(Student("3 semester", per, "datamatiker student"));
-        Person p = facade.addPersonFromGson(gson.toJson(per));
-        String expectedJsonString = gson.toJson(p);
-        String actual = facade.getPersonAsJSON(p.getId());
+       Person p = facade.addPersonFromGson(gson.toJson(new Person("Bettina", "Løfmark")));  
+       String expectedJsonString = gson.toJson(p);
+       String actual = facade.getPersonAsJSON(p.getId());
         
 //        System.out.println(gson.toJson(per));
 //        System.out.println(expectedJsonString);
@@ -93,7 +94,8 @@ public class FacadeTest {
         String personAsJSON = facade.getPersonAsJSON(p.getId());
         Person fromJSON = gson.fromJson(personAsJSON, Person.class);
         Roleschool getRole = fromJSON.getRoles().get(0);
-        assertEquals(role.getId(), getRole.getId());
+        List<Student> rolePerson = em.createQuery("SELECT s FROM Student s").getResultList();
+        assertEquals(role.getId(), rolePerson.get);
     }
 
     @Test(expected = NotFoundException.class)
@@ -102,10 +104,13 @@ public class FacadeTest {
         facade.delete(p.getId());
         facade.getPersonAsJSON(p.getId());
     }
+    
+    
 
     @Test(expected = NotFoundException.class)
     public void testGetNonExistingPerson() throws Exception {
         facade.getPersonAsJSON(10);
     }
 
+    
 }
