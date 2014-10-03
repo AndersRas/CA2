@@ -32,6 +32,7 @@ public class webServer {
         server = HttpServer.create();
         server.bind(new InetSocketAddress(port), 0);
         server.createContext("/person", createContext());
+        server.createContext("/role", createRole());
         facade = Facade.getFacade(true);
     }
 
@@ -54,13 +55,14 @@ public class webServer {
                 
                 if("GET".equalsIgnoreCase(he.getRequestMethod())){
                     if (lastIndexOf > 0){
-                        he.sendResponseHeaders(200, 0);
                         try {
                             int id = Integer.parseInt(path.substring(lastIndexOf + 1));
+                            he.sendResponseHeaders(200, 0);
                             OutputStream responseBody = he.getResponseBody();
                             String json = new Gson().toJson(facade.getPersonAsJSON(id));
                             System.out.println(json);
                             responseBody.write(json.getBytes());
+                            System.out.println("done");
                         } catch (NotFoundException ex) {
                             Logger.getLogger(webServer.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -77,9 +79,12 @@ public class webServer {
                 
                 if("DELETE".equalsIgnoreCase(he.getRequestMethod())){
                     if (lastIndexOf > 0){
-                        try {
+                        he.sendResponseHeaders(200, 0);
+                        try (OutputStream responseBody = he.getResponseBody()){
                             int id = Integer.parseInt(path.substring(lastIndexOf + 1));
-                            facade.delete(id);
+                            String json = new Gson().toJson(facade.delete(id));
+                            System.out.println(json);
+                            responseBody.write(("Deleted: " + json).getBytes());
                         } catch (NotFoundException ex) {
                             Logger.getLogger(webServer.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -93,13 +98,40 @@ public class webServer {
                     {
                         message += scanner.nextLine();
                     }
-                    if(path.substring(lastIndexOf + 4).equalsIgnoreCase("Role")){
-                        facade.addRoleFromGson(path, lastIndexOf);
-                        return;
+                    he.sendResponseHeaders(200, 0);
+                    try (OutputStream responseBody = he.getResponseBody()){
+                        String json = new Gson().toJson(facade.addPersonFromGson(message));
+                        System.out.println(json);
+                        responseBody.write(("Added: " + json).getBytes());
                     }
-                    facade.addPersonFromGson(message);
                 }
             }
         };
     }
+
+    private HttpHandler createRole() {
+        return new HttpHandler() {
+
+            @Override
+            public void handle(HttpExchange he) throws IOException {
+                he.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+                String path = he.getRequestURI().getPath();
+                int lastIndexOf = path.lastIndexOf("/");
+                
+                String message = "";
+                Scanner scanner = new Scanner(he.getRequestBody());
+                while (scanner.hasNextLine())
+                {
+                    message += scanner.nextLine();
+                }
+                he.sendResponseHeaders(200, 0);
+                try (OutputStream responseBody = he.getResponseBody()){
+                    String json = new Gson().toJson(facade.addRoleFromGson(message, lastIndexOf + 1));
+                    System.out.println(json);
+                    responseBody.write(("Postet: " + json).getBytes());
+                }
+            }
+        };
+    }
+
 }

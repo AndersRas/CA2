@@ -8,6 +8,7 @@ import Entity.Teacher;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import exceptions.NotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -46,11 +47,13 @@ public class Facade implements FacadeIF {
     @Override
     public String getPersonAsJSON(Integer id) throws NotFoundException {
         EntityManager em = emf.createEntityManager();
+         List<Person> persons = new ArrayList<>();
         Person person = em.find(Person.class, id);
+        persons.add(person);
         if (person == null) {
             throw new NotFoundException("No person exists for the given id!");
         }
-        return gson.toJson(person);
+        return gson.toJson(persons);
     }
 
     @Override

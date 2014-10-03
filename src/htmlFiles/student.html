@@ -11,10 +11,10 @@
     <title>Person - Copenhagen Business School</title>
 
     <!-- Bootstrap Core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="css/business-casual.css" rel="stylesheet">
+    <link href="business-casual.css" rel="stylesheet">
 
     <!-- Fonts -->
     <link href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
@@ -78,39 +78,15 @@
                     <hr>
                 </div>
                 <div class="col-md-4">
-                    <img class="img-responsive img-border-left" src="img/geek.jpg" alt=""/>
+                    <img class="img-responsive img-border-left" src="geek.jpg" alt=""/>
                 </div>
                 <div class="col-md-6">                   
                         <div class="container-temp">                           
                             <!-- Denne form-action referere til en tidligere opgave. Skal ændres. -->
                                 <form action="http://datdb.cphbusiness.dk/callme.php" method="POST"> 
-                                        <label>First name: </label>
-                                            <input type="text" name="firstname" value="enter you first name"/>
-                                                <br /><br />
-                                        <label>Last name: </label>
-                                            <input type="text" name="adr" value="Last name" />
-                                                <br /><br />
-                                        <label>Phone: </label> 
-                                            <input type="text" name="phone" value="Phone nr." />
-                                                <br /><br />
-                                        <label>Email: </label> 
-                                            <input type="text" name="mail" value="Email address" />
-                                                <br /><br />
-                                        <label>Course : </label>
-                                            <select>
-                                                <option>3semA</option>
-                                                <option>3semB</option>
-                                                <option>3semCos</option>
-                                            </select>
-                                                <br /><br />
-                                        <label>RoleAtSchool : </label>
-                                            <select>
-                                                <option>Student</option>
-                                                <option>Teacher</option>
-                                                <option>Assistant Teacher</option>
-                                            </select>
+                                    <div class="personEditAndNew"></div>
                                         <br /><br />
-                                        <input type="submit" value="Add new person"/>
+                                        <button class="btn btnSave" >Save</button>
                             </form>                            
                         </div>
                     </div>
@@ -121,6 +97,7 @@
                     <button class="btn btn-info">Show one Person</button><br /><br />
                     <button class="btn btn-warning">Add role</button><br /><br />
                     <button class="btn btn-danger">Delete person</button><br /><br />
+                    <button class="btn btn-danger btnNew">New</button><br /><br />                    
                 </div>           
                 
                 <div class="clearfix"></div>
@@ -137,12 +114,110 @@
         </div>
     </footer>
 
-    <!-- jQuery Version 1.11.0 -->
-    <script src="js/jquery-1.11.0.js"></script>
+    <!-- Her kommer en grim evt. løsning, som vil blive opgraderet og implementeret senere -->
+    <script type="text/html" id="personTemplate">        
+        {id}
+        {firstname}    
+        {lastname}
+        {phone}
+        {email}
+                <button class="btn btn-link btnEdit" x-id="{index}">Edit</button>
+    </script>
+     <script type="text/html" id="personEditAndNewTemplate">
+         <input type="hidden" name="id" value="{id}"/>
+                                        <label>First name: </label>
+                                            <input type="text" name="firstname" value="{firstname}"/>
+                                                <br /><br />
+                                        <label>Last name: </label>
+                                            <input type="text" name="lastname" value="{lastname}" />
+                                                <br /><br />
+                                        <label>Phone: </label> 
+                                            <input type="text" name="phone" value="{phone}" />
+                                                <br /><br />
+                                        <label>Email: </label> 
+                                            <input type="text" name="email" value="{email}" />
+                                                <br /><br />
+                                        <label>Course : </label>
+                                            <select>
+                                                <option>3semA</option>
+                                                <option>3semB</option>
+                                                <option>3semCos</option>
+                                            </select>
+                                                <br /><br />
+                                        <label>RoleAtSchool : </label>
+                                            <select>
+                                                <option>Student</option>
+                                                <option>Teacher</option>
+                                                <option>Assistant Teacher</option>
+                                            </select>
+    </script>
+    
+    <div class="personList">
+        
+    </div>
+    
+    <script>
+        window.cn = window.cn || {};
+        window.cn.ApllyTmpl = function (obj, tmlpID) {
+    var tmpl = document.getElementById(tmlpID).innerHTML;
+    if (!tmpl.replace)
+        return;
+
+    var item, useRegExp;
+    for (item in obj) {
+        if (obj.hasOwnProperty(item)) {
+            useRegExp = new RegExp('{' + item + '}', 'g');
+            tmpl = tmpl.replace(useRegExp, obj[item] !== null ? obj[item] : "");
+        }
+    }
+    return tmpl;
+};
+    </script>
+      <!-- jQuery Version 1.11.0 -->
+        <script src="jquery-1.11.0.js"></script>
+    <script>
+        var asPersonArray = JSON.parse('[{"id":"1","firstname":"Tanja","lastname":"Cederholm","phone":"11223344","email":"jhg@kjdf.dk","roles":[{}]}]');
+        for (var i = 0, max = asPersonArray.length; i < max; i++) {
+            asPersonArray[i].index = i;
+            jQuery(".personList").append(window.cn.ApllyTmpl(asPersonArray[i],"personTemplate"));
+            }
+        jQuery(".btnEdit").on("click", function(evt){
+            var id = jQuery(evt.target).attr("x-id");
+            jQuery(".personEditAndNew").html(window.cn.ApllyTmpl(asPersonArray[id],"personEditAndNewTemplate"));
+            } )
+
+    </script>
+    
+    <script>
+                jQuery(".btnNew").on("click", function(evt){
+                    
+                    var obj = {   "id":"-1",
+    "firstname":"",    
+    "lastname":"",
+	"phone":"",
+ 	"email":"" 
+}
+            jQuery(".personEditAndNew").html(window.cn.ApllyTmpl(obj,"personEditAndNewTemplate"));
+            } )
+
+        
+    </script>
+  
+    <script>
+         jQuery(".btnSave").on("click", function(evt){
+             evt.preventDefault();
+        var obj = {}
+        jQuery(".personEditAndNew input").each(function( index ) {
+            obj[$( this ).attr("name")] =  $( this ).val() ;
+});
+alert(JSON.stringify(obj));
+         });
+    </script>
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="js/bootstrap.min.js"></script>
+    <script src="bootstrap.min.js"></script>
 
 </body>
 
 </html>
+111
