@@ -16,6 +16,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
@@ -30,7 +31,8 @@ public class Person implements Serializable {
     @Id
     @Basic(optional = false)
     @Column(name = "ID")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator="s1")
+    @SequenceGenerator(name="s1",sequenceName = "PERS_SEQ", initialValue = 1, allocationSize = 1)
     @Expose
     private Integer id;
     
