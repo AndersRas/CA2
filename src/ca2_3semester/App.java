@@ -18,14 +18,16 @@ import server.webServer;
  */
 public class App {
     static int port = 8080;
-
+    
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException
     {
+        String url = "C:\\Users\\Fisk\\Documents\\NetBeansProjects\\CA2\\src\\htmlFiles\\index.html";
         webServer server = new webServer(port);
         server.start();
+        java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));        
         System.out.println("Server started, listening on port: " + port);
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("Ca2_3semesterPU");
         EntityManager em = emf.createEntityManager();
